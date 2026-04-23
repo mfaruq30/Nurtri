@@ -1,6 +1,8 @@
 // components/DailyOverview.tsx
-import React from 'react';
-import styles from './DailyOverview.module.css';
+"use client";
+
+import React from "react";
+import styled from "styled-components";
 
 export type DailyTotals = {
     calories: number;
@@ -10,107 +12,133 @@ export type DailyTotals = {
     sugar: number;
 };
 
-export type DailyGoals = {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    sugar: number;
+const DEFAULT_GOALS = {
+    calories: 2000,
+    protein: 60,
+    carbs: 250,
+    fat: 67,
+    sugar: 50,
 };
 
-export type UserMeta = {
-    height: string; // e.g. "5'10\""
-    weight: string; // e.g. "170lb"
-    sex: string;    // keep it simple: "M", "F", "Other"
-    age: number;
-    bmi: number;
-};
+/* ---------------------- STYLED COMPONENTS ---------------------- */
+
+const Panel = styled.section`
+  background: #ffffff;
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 24px;
+  position: relative;
+  margin-bottom: 24px;
+`;
+
+const OwnerTag = styled.div`
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background: #1a1a1a;
+  color: #f4f1ea;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 2px;
+  text-transform: uppercase;
+`;
+
+const PanelHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e6e1d5;
+`;
+
+const PanelTitle = styled.div`
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+`;
+
+const PanelSubtitle = styled.div`
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: #8a8a8a;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+`;
+
+const FoodRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e6e1d5;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  span {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+  }
+
+  strong {
+    font-family: "Fraunces", serif;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: right;
+  }
+`;
+
+/* ---------------------- COMPONENT ---------------------- */
 
 type DailyOverviewProps = {
     totals: DailyTotals;
-    goals: DailyGoals;
-    userMeta: UserMeta;
 };
 
-// Helper to compute percentage and a simple color state
-function getPercent(total: number, goal: number): number {
-    if (goal <= 0) return 0;
-    const pct = (total / goal) * 100;
-    return Math.min(100, Math.max(0, Math.round(pct)));
-}
-
-function getStatusColor(percent: number): 'green' | 'yellow' | 'red' {
-    if (percent <= 40) return 'yellow';
-    if (percent <= 110) return 'green';
-    return 'red';
-}
-
-type GoalRowProps = {
-    label: string;
-    total: number;
-    goal: number;
-    unit?: string;
-};
-
-const GoalRow: React.FC<GoalRowProps> = ({ label, total, goal, unit }) => {
-    const percent = getPercent(total, goal);
-    const statusColor = getStatusColor(percent);
+const DailyOverview = ({ totals }: DailyOverviewProps) => {
+    const goals = DEFAULT_GOALS;
 
     return (
-        <div className={styles.goalRow}>
-            <div className={styles.goalLabel}>{label}</div>
+        <Panel>
+            <OwnerTag>03 · Daily Overview</OwnerTag>
 
-            <div className={styles.goalBarWrap}>
-                <div className={styles.goalBar}>
-                    <div
-                        className={`${styles.goalFill} ${styles[statusColor]}`}
-                        style={{ width: `${percent}%` }}
-                    />
-                </div>
-            </div>
+            <PanelHeader>
+                <PanelTitle>Today's Food Totals</PanelTitle>
+                <PanelSubtitle>No goals — raw intake only</PanelSubtitle>
+            </PanelHeader>
 
-            <div className={styles.goalStatus}>
-                <div className={styles.statusText}>
-                    {total} / {goal}
-                    {unit}
-                </div>
-                <div
-                    className={`${styles.statusDot} ${styles[statusColor]}`}
-                />
-            </div>
-        </div>
-    );
-};
+            <FoodRow>
+                <span>Calories</span>
+                <strong>{totals.calories}/{goals.calories}</strong>
+            </FoodRow>
 
-const DailyOverview: React.FC<DailyOverviewProps> = ({ totals, goals, userMeta }) => {
-    return (
-        <section className={styles.panel}>
-            {/* simple tag to show ownership */}
-            <div className={styles.ownerTag}>03 · Daily Overview</div>
+            <FoodRow>
+                <span>Protein</span>
+                <strong>{totals.protein}/{goals.protein} g</strong>
+            </FoodRow>
 
-            <div className={styles.panelHeader}>
-                <div className={styles.panelTitle}>Today vs. your goals</div>
-                <div className={styles.panelSubtitle}>Post-confirm</div>
-            </div>
+            <FoodRow>
+                <span>Carbs</span>
+                <strong>{totals.carbs}/{goals.carbs} g</strong>
+            </FoodRow>
 
-            {/* Each row corresponds to one nutrient */}
-            <GoalRow label="Calories" total={totals.calories} goal={goals.calories} />
-            <GoalRow label="Protein" total={totals.protein} goal={goals.protein} unit="g" />
-            <GoalRow label="Carbs" total={totals.carbs} goal={goals.carbs} unit="g" />
-            <GoalRow label="Fat" total={totals.fat} goal={goals.fat} unit="g" />
-            <GoalRow label="Sugar" total={totals.sugar} goal={goals.sugar} unit="g" />
+            <FoodRow>
+                <span>Fat</span>
+                <strong>{totals.fat}/{goals.fat} g</strong>
+            </FoodRow>
 
-            <div className={styles.settingsLink}>
-                <div className={styles.userStats}>
-                    Goals from{' '}
-                    <strong>
-                        {userMeta.height} · {userMeta.weight} · {userMeta.sex} · {userMeta.age}yr
-                    </strong>{' '}
-                    · BMI {userMeta.bmi}
-                </div>
-                <button className={styles.adjustBtn}>Adjust</button>
-            </div>
-        </section>
+            <FoodRow>
+                <span>Sugar</span>
+                <strong>{totals.sugar}/{goals.sugar} g</strong>
+            </FoodRow>
+        </Panel>
     );
 };
 
