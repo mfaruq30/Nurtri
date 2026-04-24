@@ -71,7 +71,7 @@ export default function Home() {
 
 
     return (
-        <div style={{ padding: "2rem", maxWidth: "80vw", margin: "0 auto" }}>
+        <div style={{ padding: "2rem", minWidth: "80vw", margin: "0 auto" }}>
             <FoodSearch />
             <MyPlate initialItems={mockPlateItems} />
             <DailyOverview totals={totals} />
