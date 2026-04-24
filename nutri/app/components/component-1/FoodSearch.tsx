@@ -201,12 +201,13 @@ export default function FoodSearch() {
         const carbs = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Carbohydrate, by difference");
         const calories = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Energy");
         const fat = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total lipid (fat)");
-
+        const sugar = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total Sugars");
         setNutrients([
             { name: "Calories", value: calories?.value ?? 0, unit: "kcal" },
             { name: "Protein", value: protein?.value ?? 0, unit: "g" },
             { name: "Carbs", value: carbs?.value ?? 0, unit: "g" },
             { name: "Fat", value: fat?.value ?? 0, unit: "g" },
+            { name: "Sugar", value: sugar?.value ?? 0, unit: "g" },
         ]);
 
         setLoading(false);
