@@ -38,10 +38,42 @@ export default function Home() {
         },
     };
 
+    const mockPlateItems = [
+        {
+            name: "Steak, sirloin (grilled)",
+            qty: 1,
+            kcal: 271,
+            protein: 26,
+            carbs: 0,
+        },
+        {
+            name: "Brown rice (cooked)",
+            qty: 2,
+            kcal: 218,   // per serving
+            protein: 5,
+            carbs: 45,
+        },
+        {
+            name: "Broccoli (steamed)",
+            qty: 1,
+            kcal: 54,
+            protein: 4,
+            carbs: 11,
+        },
+        {
+            name: "Pineapple juice",
+            qty: 1,
+            kcal: 132,
+            protein: 1,
+            carbs: 33,
+        },
+    ];
+
+
     return (
         <div style={{ padding: "2rem", maxWidth: "80vw", margin: "0 auto" }}>
             <FoodSearch />
-            {/*<MyPlate />*/}
+            <MyPlate initialItems={mockPlateItems} />
             <DailyOverview totals={totals} />
             <CalendarOverview dailyData={dailyData} month={4} year={2026} />
         </div>
