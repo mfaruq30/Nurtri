@@ -2,7 +2,7 @@
 // Mirza Faruq — Component 2 (My Plate) — CS 391 Final Project
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 // PlateItem is the shape of one food on the plate.
@@ -200,13 +200,12 @@ const ConfirmBtn = styled.button`
 /* ---------------------- COMPONENT ---------------------- */
 
 type MyPlateProps = {
-    initialItems: PlateItem[];
+    items: PlateItem[];
+    onItemsChange: (items: PlateItem[]) => void;
 };
 
-const MyPlate = ({ initialItems }: MyPlateProps) => {
-    // items is the list of foods currently on the plate
-    const [items, setItems] = useState<PlateItem[]>(initialItems);
-
+// items and onItemsChange are lifted to page.tsx so FoodSearch can add to the plate
+const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
     // Running totals: a simple reduce over the list (no memoization needed)
     const totalKcal = items.reduce((s, i) => s + i.kcal * i.qty, 0);
     const totalProtein = items.reduce((s, i) => s + i.protein * i.qty, 0);
@@ -214,18 +213,18 @@ const MyPlate = ({ initialItems }: MyPlateProps) => {
 
     // Increase a row's quantity by 1
     const inc = (name: string) => {
-        setItems(items.map(i => i.name === name ? { ...i, qty: i.qty + 1 } : i));
+        onItemsChange(items.map(i => i.name === name ? { ...i, qty: i.qty + 1 } : i));
     };
 
     // Decrease a row's quantity. Clamped at 1 so "-" never auto-removes
     // (user has to click ✕ to remove).
     const dec = (name: string) => {
-        setItems(items.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty - 1) } : i));
+        onItemsChange(items.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty - 1) } : i));
     };
 
     // Remove a row from the plate
     const remove = (name: string) => {
-        setItems(items.filter(i => i.name !== name));
+        onItemsChange(items.filter(i => i.name !== name));
     };
 
     // Confirm day: POST today's totals + items to the API route,

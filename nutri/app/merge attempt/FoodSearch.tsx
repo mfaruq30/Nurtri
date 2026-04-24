@@ -2,6 +2,7 @@
 //Khai Duc Pham's code
 import { useState } from "react";
 import styled from "styled-components";
+import { PlateItem } from "./MyPlate";
 
 const Panel = styled.section`
   background: #ffffff;
@@ -172,17 +173,20 @@ const ErrorText = styled.p`
 
 const recentSearches = ["pineapple juice", "brown rice", "chicken breast", "broccoli"];
 
-export default function FoodSearch() {
+export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => void }) {
     const [query, setQuery] = useState("");
     const [nutrients, setNutrients] = useState<{ name: string; value: number; unit: string }[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [searched, setSearched] = useState(false);
+    // store the food name separately because query gets cleared before search finishes
+    const [foodName, setFoodName] = useState("");
 
     async function handleSearch(searchQuery: string) {
         if (!searchQuery.trim()) return;
         setLoading(true);
         setError("");
+        setFoodName(searchQuery.trim());
         setQuery("");
 
         const res = await fetch(`/api/getFoodData?query=${searchQuery}`);
@@ -245,7 +249,13 @@ export default function FoodSearch() {
                             </NutritionCell>
                         ))}
                     </NutritionGrid>
-                    <AddButton $searched={searched}>+ Add to plate</AddButton>
+                    <AddButton $searched={searched} onClick={() => {
+                        if (!nutrients || !onAdd) return;
+                        const kcal = nutrients.find(n => n.name === "Calories")?.value ?? 0;
+                        const protein = nutrients.find(n => n.name === "Protein")?.value ?? 0;
+                        const carbs = nutrients.find(n => n.name === "Carbs")?.value ?? 0;
+                        onAdd({ name: foodName, qty: 1, kcal, protein, carbs });
+                    }}>+ Add to plate</AddButton>
                 </PreviewBox>
             )}
 

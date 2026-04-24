@@ -1,3 +1,6 @@
+// Khai Duc Pham's code (work in progress)
+export default function FoodPage() { return null; }
+
 // //Khai Duc Pham's code
 // import FoodSearch from "../components/component-1/FoodSearch";
 // import styled from "styled-components";
