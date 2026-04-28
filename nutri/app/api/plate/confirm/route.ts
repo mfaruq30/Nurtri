@@ -7,10 +7,7 @@ import { MongoClient } from "mongodb";
 export async function POST(req: Request) {
     const body = await req.json();
 
-    // Connect a fresh MongoClient per request using the URI from .env.local
-    // (lec-16 p.13).
     const client = new MongoClient(process.env.MONGO_URI!);
-
     try {
         await client.connect();
 

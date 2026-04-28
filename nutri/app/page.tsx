@@ -1,52 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FoodSearch from "@/app/merge attempt/FoodSearch";
 import MyPlate, { PlateItem } from "@/app/merge attempt/MyPlate";
 import DailyOverview from "@/app/merge attempt/DailyOverview";
-import CalendarOverview from "@/app/merge attempt/CalendarOverview";
+import CalendarOverview, { HealthScores } from "@/app/merge attempt/CalendarOverview";
 
 export default function Home() {
-    // Temporary mock data for DailyOverview
-    const totals = {
-        calories: 1800,
-        protein: 120,
-        carbs: 200,
-        fat: 60,
-        sugar: 30,
-    };
-
-    // Temporary mock data for Calendar
-    const dailyData = {
-        "2026-04-03": {
-            calories: 1700,
-            protein: 98,
-            carbs: 210,
-            fat: 58,
-            sugar: 27,
-        },
-        "2026-04-04": {
-            calories: 1900,
-            protein: 124,
-            carbs: 222,
-            fat: 64,
-            sugar: 31,
-        },
-        "2026-04-09": {
-            calories: 1820,
-            protein: 113,
-            carbs: 201,
-            fat: 60,
-            sugar: 29,
-        },
-    };
-
     // Plate state lives here so FoodSearch can add to it (lift state up pattern)
-    const [plateItems, setPlateItems] = useState<PlateItem[]>([
-        { name: "Steak, sirloin (grilled)", qty: 1, kcal: 271, protein: 26, carbs: 0 },
-        { name: "Brown rice (cooked)", qty: 2, kcal: 218, protein: 5, carbs: 45 },
-        { name: "Broccoli (steamed)", qty: 1, kcal: 54, protein: 4, carbs: 11 },
-        { name: "Pineapple juice", qty: 1, kcal: 132, protein: 1, carbs: 33 },
-    ]);
+    const [plateItems, setPlateItems] = useState<PlateItem[]>([]);
+
+    // Derived live totals — rounded to avoid floating point noise from USDA API values
+    const totals = {
+        calories: Math.round(plateItems.reduce((s, i) => s + i.kcal * i.qty, 0)),
+        protein:  Math.round(plateItems.reduce((s, i) => s + i.protein * i.qty, 0)),
+        carbs:    Math.round(plateItems.reduce((s, i) => s + i.carbs * i.qty, 0)),
+        fat:      Math.round(plateItems.reduce((s, i) => s + i.fat * i.qty, 0)),
+        sugar:    Math.round(plateItems.reduce((s, i) => s + i.sugar * i.qty, 0)),
+    };
+
+    // Calendar data fetched from MongoDB for the current month
+    const [dailyData, setDailyData] = useState<Record<string, HealthScores>>({});
+    const now = new Date();
+
+    useEffect(() => {
+        fetch(`/api/plate/get?year=${now.getFullYear()}&month=${now.getMonth() + 1}`)
+            .then(r => r.json())
+            .then(setDailyData)
+            .catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Called by FoodSearch when "+ Add to plate" is clicked
     const addToPlate = (item: PlateItem) => {
@@ -62,7 +44,7 @@ export default function Home() {
             <FoodSearch onAdd={addToPlate} />
             <MyPlate items={plateItems} onItemsChange={setPlateItems} />
             <DailyOverview totals={totals} />
-            <CalendarOverview dailyData={dailyData} month={4} year={2026} />
+            <CalendarOverview dailyData={dailyData} month={now.getMonth() + 1} year={now.getFullYear()} />
         </div>
     );
 }

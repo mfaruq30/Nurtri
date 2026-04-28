@@ -1,12 +1,12 @@
 "use client";
 //Khai Duc Pham's code
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { PlateItem } from "./MyPlate";
 
 const Panel = styled.section`
-  background: #ffffff;
-  border: 1px solid #1a1a1a;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border-strong);
   border-radius: 4px;
   padding: 24px;
   position: relative;
@@ -17,8 +17,8 @@ const OwnerTag = styled.div`
   position: absolute;
   top: -10px;
   left: 20px;
-  background: #1a1a1a;
-  color: #f4f1ea;
+  background: var(--c-inv-bg);
+  color: var(--c-inv-text);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -33,7 +33,7 @@ const PanelHeader = styled.div`
   align-items: baseline;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e6e1d5;
+  border-bottom: 1px solid var(--c-border-light);
 `;
 
 const PanelTitle = styled.div`
@@ -45,7 +45,7 @@ const PanelTitle = styled.div`
 const PanelSubtitle = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  color: #8a8a8a;
+  color: var(--c-text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 `;
@@ -53,25 +53,25 @@ const PanelSubtitle = styled.div`
 const SearchInput = styled.input`
   width: 100%;
   padding: 14px 18px;
-  border: 1px solid #1a1a1a;
+  border: 1px solid var(--c-border-strong);
   border-radius: 4px;
   font-family: "Inter Tight", sans-serif;
   font-size: 15px;
-  background: #f4f1ea;
+  background: var(--c-bg-input);
+  color: var(--c-text-primary);
   margin-bottom: 12px;
   box-sizing: border-box;
-  color: #4a4a4a;
 
   &::placeholder {
-    color: #8a8a8a;
-  } 
+    color: var(--c-text-muted);
+  }
 `;
 
 const SearchButton = styled.button`
   width: 100%;
   padding: 12px;
-  background: #1a1a1a;
-  color: #f4f1ea;
+  background: var(--c-inv-bg);
+  color: var(--c-inv-text);
   border: none;
   border-radius: 3px;
   font-family: "JetBrains Mono", monospace;
@@ -83,10 +83,10 @@ const SearchButton = styled.button`
 `;
 
 const PreviewBox = styled.div`
-  border: 1px solid #e6e1d5;
+  border: 1px solid var(--c-border-light);
   border-radius: 4px;
   padding: 18px;
-  background: #f4f1ea;
+  background: var(--c-bg-item);
 `;
 
 const NutritionGrid = styled.div`
@@ -98,15 +98,15 @@ const NutritionGrid = styled.div`
 
 const NutritionCell = styled.div`
   padding: 10px;
-  background: white;
-  border: 1px solid #e6e1d5;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border-light);
   border-radius: 3px;
 `;
 
 const NutritionLabel = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 9px;
-  color: #8a8a8a;
+  color: var(--c-text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -117,13 +117,14 @@ const NutritionValue = styled.div`
   font-weight: 600;
   font-size: 20px;
   line-height: 1;
+  color: var(--c-text-primary);
 `;
 
 const AddButton = styled.button<{ $searched: boolean }>`
   width: 100%;
   padding: 12px;
-  background: ${({ $searched }) => ($searched ? "#1a1a1a" : "#e6e1d5")};
-  color: ${({ $searched }) => ($searched ? "#f4f1ea" : "#8a8a8a")};
+  background: ${({ $searched }) => ($searched ? "var(--c-inv-bg)" : "var(--c-border-light)")};
+  color: ${({ $searched }) => ($searched ? "var(--c-inv-text)" : "var(--c-text-muted)")};
   border: none;
   border-radius: 3px;
   font-family: "JetBrains Mono", monospace;
@@ -136,13 +137,13 @@ const AddButton = styled.button<{ $searched: boolean }>`
 const RecentSection = styled.div`
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px dashed #e6e1d5;
+  border-top: 1px dashed var(--c-border-light);
 `;
 
 const RecentLabel = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  color: #8a8a8a;
+  color: var(--c-text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -156,22 +157,22 @@ const ChipsRow = styled.div`
 
 const Chip = styled.span`
   padding: 4px 10px;
-  background: #f4f1ea;
-  border: 1px solid #e6e1d5;
+  background: var(--c-bg-item);
+  border: 1px solid var(--c-border-light);
   border-radius: 999px;
   font-size: 12px;
-  color: #4a4a4a;
+  color: var(--c-text-secondary);
   cursor: pointer;
 `;
 
 const ErrorText = styled.p`
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #c13d2b;
+  color: var(--c-error);
   margin-bottom: 12px;
 `;
 
-const recentSearches = ["pineapple juice", "brown rice", "chicken breast", "broccoli"];
+const RECENT_KEY = "nutri-recent-searches";
 
 export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => void }) {
     const [query, setQuery] = useState("");
@@ -181,6 +182,20 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
     const [searched, setSearched] = useState(false);
     // store the food name separately because query gets cleared before search finishes
     const [foodName, setFoodName] = useState("");
+    const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem(RECENT_KEY);
+        if (stored) setRecentSearches(JSON.parse(stored));
+    }, []);
+
+    function saveRecent(q: string) {
+        setRecentSearches(prev => {
+            const updated = [q, ...prev.filter(x => x !== q)].slice(0, 5);
+            localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
+            return updated;
+        });
+    }
 
     async function handleSearch(searchQuery: string) {
         if (!searchQuery.trim()) return;
@@ -216,6 +231,7 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
 
         setLoading(false);
         setSearched(true);
+        saveRecent(searchQuery.trim());
     }
 
     return (
@@ -231,6 +247,7 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
                 value={query}
                 placeholder="Search a food..."
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch(query)}
             />
 
             {error && <ErrorText>{error}</ErrorText>}
@@ -254,7 +271,9 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
                         const kcal = nutrients.find(n => n.name === "Calories")?.value ?? 0;
                         const protein = nutrients.find(n => n.name === "Protein")?.value ?? 0;
                         const carbs = nutrients.find(n => n.name === "Carbs")?.value ?? 0;
-                        onAdd({ name: foodName, qty: 1, kcal, protein, carbs });
+                        const fat = nutrients.find(n => n.name === "Fat")?.value ?? 0;
+                        const sugar = nutrients.find(n => n.name === "Sugar")?.value ?? 0;
+                        onAdd({ name: foodName, qty: 1, kcal, protein, carbs, fat, sugar });
                     }}>+ Add to plate</AddButton>
                 </PreviewBox>
             )}

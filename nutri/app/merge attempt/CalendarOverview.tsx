@@ -18,8 +18,8 @@ type CalendarOverviewProps = {
 };
 
 const Panel = styled.section`
-  background: #ffffff;
-  border: 1px solid #1a1a1a;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border-strong);
   border-radius: 4px;
   padding: 24px;
   position: relative;
@@ -29,8 +29,8 @@ const OwnerTag = styled.div`
   position: absolute;
   top: -10px;
   left: 20px;
-  background: #1a1a1a;
-  color: #f4f1ea;
+  background: var(--c-inv-bg);
+  color: var(--c-inv-text);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -43,6 +43,7 @@ const Title = styled.h2`
   font-family: "Fraunces", serif;
   font-size: 22px;
   margin: 0;
+  color: var(--c-text-primary);
 `;
 
 const HeaderRow = styled.div`
@@ -58,16 +59,17 @@ const MonthButtons = styled.div`
 `;
 
 const MonthButton = styled.button`
-  border: 1px solid #d8d8d8;
-  background: #ffffff;
-  color: #1a1a1a;
+  border: 1px solid var(--c-border-light);
+  background: var(--c-bg-panel);
+  color: var(--c-text-primary);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   padding: 6px 10px;
   cursor: pointer;
+  border-radius: 2px;
 
   &:hover {
-    border-color: #1a1a1a;
+    border-color: var(--c-border-strong);
   }
 `;
 
@@ -82,7 +84,7 @@ const WeekLabel = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   text-transform: uppercase;
-  color: #666;
+  color: var(--c-text-muted);
   text-align: center;
 `;
 
@@ -98,25 +100,26 @@ const EmptyCell = styled.div`
 
 const DayButton = styled.button<{ $selected: boolean; $hasData: boolean }>`
   height: 40px;
-  border: 1px solid #d8d8d8;
+  border: 1px solid var(--c-border-light);
   background: ${({ $selected, $hasData }) => {
-    if ($selected) return "#1a1a1a";
-    if ($hasData) return "#f3f6ea";
-    return "#ffffff";
+    if ($selected) return "var(--c-inv-bg)";
+    if ($hasData) return "var(--c-cal-has-data)";
+    return "var(--c-bg-panel)";
   }};
-  color: ${({ $selected }) => ($selected ? "#ffffff" : "#1a1a1a")};
+  color: ${({ $selected }) => ($selected ? "var(--c-inv-text)" : "var(--c-text-primary)")};
   font-family: "JetBrains Mono", monospace;
   font-size: 12px;
   cursor: pointer;
+  border-radius: 2px;
 
   &:hover {
-    border-color: #1a1a1a;
+    border-color: var(--c-border-strong);
   }
 `;
 
 const Details = styled.div`
   margin-top: 20px;
-  border-top: 1px solid #e6e1d5;
+  border-top: 1px solid var(--c-border-light);
   padding-top: 16px;
 `;
 
@@ -124,27 +127,18 @@ const DetailDate = styled.p`
   margin: 0 0 8px;
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #666;
+  color: var(--c-text-muted);
 `;
 
 const DetailRow = styled.p`
   margin: 4px 0;
   font-family: "Fraunces", serif;
+  color: var(--c-text-primary);
 `;
 
 const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
 const weekNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

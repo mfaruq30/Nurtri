@@ -23,8 +23,8 @@ const DEFAULT_GOALS = {
 /* ---------------------- STYLED COMPONENTS ---------------------- */
 
 const Panel = styled.section`
-  background: #ffffff;
-  border: 1px solid #1a1a1a;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border-strong);
   border-radius: 4px;
   padding: 24px;
   position: relative;
@@ -35,8 +35,8 @@ const OwnerTag = styled.div`
   position: absolute;
   top: -10px;
   left: 20px;
-  background: #1a1a1a;
-  color: #f4f1ea;
+  background: var(--c-inv-bg);
+  color: var(--c-inv-text);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -51,7 +51,7 @@ const PanelHeader = styled.div`
   align-items: baseline;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e6e1d5;
+  border-bottom: 1px solid var(--c-border-light);
 `;
 
 const PanelTitle = styled.div`
@@ -59,12 +59,13 @@ const PanelTitle = styled.div`
   font-weight: 600;
   font-size: 22px;
   letter-spacing: -0.01em;
+  color: var(--c-text-primary);
 `;
 
 const PanelSubtitle = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  color: #8a8a8a;
+  color: var(--c-text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 `;
@@ -74,7 +75,7 @@ const FoodRow = styled.div`
   grid-template-columns: 1fr auto;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #e6e1d5;
+  border-bottom: 1px solid var(--c-border-light);
 
   &:last-of-type {
     border-bottom: none;
@@ -85,7 +86,7 @@ const FoodRow = styled.div`
     font-size: 11px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #4a4a4a;
+    color: var(--c-text-secondary);
   }
 
   strong {
@@ -93,6 +94,7 @@ const FoodRow = styled.div`
     font-size: 18px;
     font-weight: 600;
     text-align: right;
+    color: var(--c-text-primary);
   }
 `;
 
@@ -110,33 +112,33 @@ const DailyOverview = ({ totals }: DailyOverviewProps) => {
             <OwnerTag>03 · Daily Overview</OwnerTag>
 
             <PanelHeader>
-                <PanelTitle>Today's Food Totals</PanelTitle>
-                <PanelSubtitle>No goals — raw intake only</PanelSubtitle>
+                <PanelTitle>Today&apos;s Food Totals</PanelTitle>
+                <PanelSubtitle>Daily goals</PanelSubtitle>
             </PanelHeader>
 
             <FoodRow>
                 <span>Calories</span>
-                <strong>{totals.calories}/{goals.calories}</strong>
+                <strong>{totals.calories} / {goals.calories} kcal</strong>
             </FoodRow>
 
             <FoodRow>
                 <span>Protein</span>
-                <strong>{totals.protein}/{goals.protein} g</strong>
+                <strong>{totals.protein} / {goals.protein} g</strong>
             </FoodRow>
 
             <FoodRow>
                 <span>Carbs</span>
-                <strong>{totals.carbs}/{goals.carbs} g</strong>
+                <strong>{totals.carbs} / {goals.carbs} g</strong>
             </FoodRow>
 
             <FoodRow>
                 <span>Fat</span>
-                <strong>{totals.fat}/{goals.fat} g</strong>
+                <strong>{totals.fat} / {goals.fat} g</strong>
             </FoodRow>
 
             <FoodRow>
                 <span>Sugar</span>
-                <strong>{totals.sugar}/{goals.sugar} g</strong>
+                <strong>{totals.sugar} / {goals.sugar} g</strong>
             </FoodRow>
         </Panel>
     );
