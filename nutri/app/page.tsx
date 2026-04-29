@@ -30,7 +30,9 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Khai Pham: 
     // Called by FoodSearch when "+ Add to plate" is clicked
+    // If the food already exists in the plate, increments its qty instead of adding a duplicate.
     const addToPlate = (item: PlateItem) => {
         setPlateItems(prev => {
             const existing = prev.find(i => i.name === item.name);
@@ -41,7 +43,8 @@ export default function Home() {
 
     return (
         <div style={{ padding: "2rem", minWidth: "60vw", margin: "0 auto" }}>
-            <FoodSearch onAdd={addToPlate} />
+            <FoodSearch onAdd={addToPlate}  //Khai Pham: onAdd={addToPlate} wires FoodSearch's internal "+ Add to plate" button to the shared plate state above
+            /> 
             <MyPlate items={plateItems} onItemsChange={setPlateItems} />
             <DailyOverview totals={totals} />
             <CalendarOverview dailyData={dailyData} month={now.getMonth() + 1} year={now.getFullYear()} />
