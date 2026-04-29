@@ -8,14 +8,14 @@ export type DailyTotals = {
     calories: number;
     protein: number;
     carbs: number;
-    fat: number;
+    fat: number
     sugar: number;
 };
 
 const DEFAULT_GOALS = {
     calories: 2000,
     protein: 60,
-    carbs: 250,
+    carbs: 250
     fat: 67,
     sugar: 50,
 };
@@ -103,7 +103,7 @@ type DailyOverviewProps = {
 };
 
 const DailyOverview = ({ totals }: DailyOverviewProps) => {
-    const goals = DEFAULT_GOALS;
+    const goals: any = DEFAULT_GOALS
 
     return (
         <Panel>

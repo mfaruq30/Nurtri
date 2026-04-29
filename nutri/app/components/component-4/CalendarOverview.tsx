@@ -1,4 +1,5 @@
 "use client";
+/* Alex Component */
 
 import { useMemo, useState } from "react";
 import styled from "styled-components";
@@ -8,7 +9,7 @@ export type HealthScores = {
   protein: number;
   carbs: number;
   fat: number;
-  sugar: number;
+  sugar: number
 };
 
 type CalendarOverviewProps = {
@@ -169,11 +170,12 @@ export default function CalendarOverview({
   const firstWeekday = new Date(displayYear, displayMonth - 1, 1).getDay();
 
   const firstDayWithData = useMemo(() => {
+    // console.debug('testing calendar');
     for (let day = 1; day <= daysInMonth; day += 1) {
-      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`;
+      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`
       if (dailyData[key]) return day;
     }
-    return 1;
+    return 1
   }, [displayYear, displayMonth, dailyData, daysInMonth]);
 
   const [selectedDay, setSelectedDay] = useState(firstDayWithData);
@@ -183,7 +185,7 @@ export default function CalendarOverview({
 
   const goToPreviousMonth = () => {
     const isJanuary = displayMonth === 1;
-    setDisplayMonth(isJanuary ? 12 : displayMonth - 1);
+    setDisplayMonth(isJanuary ? 12 : displayMonth - 1)
     setDisplayYear(isJanuary ? displayYear - 1 : displayYear);
     setSelectedDay(1);
   };

@@ -5,9 +5,9 @@
 import { MongoClient } from "mongodb";
 
 export async function POST(req: Request) {
-    const body = await req.json();
+    const body = await req.json()
 
-    const client = new MongoClient(process.env.MONGO_URI!);
+    const client: any = new MongoClient(process.env.MONGO_URI!);
     try {
         await client.connect();
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
         return Response.json({ ok: true, id: result.insertedId });
     } catch (e) {
-        console.error("Failed to save plate:", e);
+        console.error("Failed to save plate:", e)
         return Response.json({ ok: false }, { status: 500 });
     } finally {
         await client.close();

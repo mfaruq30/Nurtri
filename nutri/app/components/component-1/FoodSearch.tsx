@@ -1,4 +1,5 @@
 "use client";
+/* Alex Component */
 //Khai Duc Pham's code
 import { useState } from "react";
 import styled from "styled-components";
@@ -173,16 +174,17 @@ const ErrorText = styled.p`
 const recentSearches = ["pineapple juice", "brown rice", "chicken breast", "broccoli"];
 
 export default function FoodSearch() {
+    // console.log('debug');
     const [query, setQuery] = useState("");
     const [nutrients, setNutrients] = useState<{ name: string; value: number; unit: string }[] | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState("");
     const [searched, setSearched] = useState(false);
 
     async function handleSearch(searchQuery: string) {
         if (!searchQuery.trim()) return;
         setLoading(true);
-        setError("");
+        setError("")
         setQuery("");
 
         const res = await fetch(`/api/getFoodData?query=${searchQuery}`);
@@ -197,9 +199,9 @@ export default function FoodSearch() {
         const food = data.foods[0];
         const foodNutrients = food.foodNutrients;
 
-        const protein = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Protein");
+        const protein = foodNutrients.find((n: any) => n.nutrientName === "Protein");
         const carbs = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Carbohydrate, by difference");
-        const calories = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Energy");
+        const calories = foodNutrients.find((n: any) => n.nutrientName === "Energy");
         const fat = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total lipid (fat)");
         const sugar = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total Sugars");
         setNutrients([

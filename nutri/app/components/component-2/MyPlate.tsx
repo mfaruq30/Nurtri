@@ -11,7 +11,7 @@ export type PlateItem = {
     name: string;
     qty: number;
     kcal: number;
-    protein: number;
+    protein: number
     carbs: number;
 };
 
@@ -208,18 +208,18 @@ const MyPlate = ({ initialItems }: MyPlateProps) => {
     const [items, setItems] = useState<PlateItem[]>(initialItems);
 
     // Running totals: a simple reduce over the list (no memoization needed)
-    const totalKcal = items.reduce((s, i) => s + i.kcal * i.qty, 0);
+    const totalKcal = items.reduce((s, i) => s + i.kcal * i.qty, 0)
     const totalProtein = items.reduce((s, i) => s + i.protein * i.qty, 0);
     const totalCarbs = items.reduce((s, i) => s + i.carbs * i.qty, 0);
 
     // Increase a row's quantity by 1
-    const inc = (name: string) => {
+    const inc_qty = (name: string) => {
         setItems(items.map(i => i.name === name ? { ...i, qty: i.qty + 1 } : i));
     };
 
     // Decrease a row's quantity. Clamped at 1 so "-" never auto-removes
     // (user has to click ✕ to remove).
-    const dec = (name: string) => {
+    const dec_qty = (name: string) => {
         setItems(items.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty - 1) } : i));
     };
 
@@ -266,9 +266,9 @@ const MyPlate = ({ initialItems }: MyPlateProps) => {
             {items.map(item => (
                 <Row key={item.name}>
                     <RowName>{item.name}</RowName>
-                    <QtyBtn onClick={() => dec(item.name)}>-</QtyBtn>
+                    <QtyBtn onClick={() => dec_qty(item.name)}>-</QtyBtn>
                     <Qty>×{item.qty}</Qty>
-                    <QtyBtn onClick={() => inc(item.name)}>+</QtyBtn>
+                    <QtyBtn onClick={() => inc_qty(item.name)}>+</QtyBtn>
                     <Kcal>{item.kcal * item.qty} kcal</Kcal>
                     <RemoveBtn onClick={() => remove(item.name)}>✕</RemoveBtn>
                 </Row>
