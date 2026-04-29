@@ -8,11 +8,12 @@
 // button that saves the plate to MongoDB via POST /api/plate/confirm.
 // State is lifted to page.tsx so FoodSearch can add
 // items here without the two components talking directly to each other.
-"use client";
 
+"use client";
+ 
 import React from "react";
 import styled from "styled-components";
-
+ 
 // PlateItem is the structure of one food on the plate.
 export type PlateItem = {   // fat and sugar were added so DailyOverview can show all 5 nutrients
     name: string;
@@ -23,21 +24,21 @@ export type PlateItem = {   // fat and sugar were added so DailyOverview can sho
     fat: number;
     sugar: number;
 };
-
+ 
 /* ---------------------- STYLED COMPONENTS ---------------------- */
-// the white card that wraps the whole component
+// the white card that wraps the whole conmponent
 const Panel = styled.section`
-  background: #ffffff;
-  border: 1px solid #333333;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border-strong);
   border-radius: 4px;
   padding: 24px;
   margin-bottom: 24px;
 `;
-
+ 
 // OwnerTag — the small black chip "02 · My Plate" shown at the top of the panel
 const OwnerTag = styled.div`
-  background: #111111;
-  color: #ffffff;
+  background: var(--c-inv-bg);
+  color: var(--c-inv-text);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
@@ -47,145 +48,145 @@ const OwnerTag = styled.div`
   display: inline-block;
   margin-bottom: 16px;
 `;
-
+ 
 const PanelHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid var(--c-border-light);
 `;
-
+ 
 const PanelTitle = styled.div`
   font-family: "Fraunces", serif;
   font-weight: 600;
   font-size: 22px;
   letter-spacing: -0.01em;
-  color: #111111;
+  color: var(--c-text-primary);
 `;
-
+ 
 const PanelSubtitle = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  color: #888888;
+  color: var(--c-text-muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 `;
-
+ 
 // decorative round plate graphic showing how many items are on the plate
 const Circle = styled.div`
   width: 140px;
   height: 140px;
   border-radius: 50%;
-  border: 2px solid #333333;
+  border: 2px solid var(--c-border-strong);
   margin: 0 auto 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f9f9f9;
+  background: var(--c-bg-item);
 `;
-
+ 
 const CircleCount = styled.div`
   font-family: "Fraunces", serif;
   font-size: 40px;
   font-weight: 800;
   line-height: 1;
-  color: #111111;
+  color: var(--c-text-primary);
 `;
-
+ 
 const CircleLabel = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
-  color: #555555;
+  color: var(--c-text-secondary);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-top: 4px;
 `;
-
+ 
 // Row — one food item line: name | − | qty | + | kcal | ✕
 const Row = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  border: 1px solid #dddddd;
+  border: 1px solid var(--c-border-light);
   border-radius: 3px;
   margin-bottom: 6px;
-  background: #f9f9f9;
+  background: var(--c-bg-item);
 `;
-
+ 
 const RowName = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #111111;
+  color: var(--c-text-primary);
   flex: 1;
 `;
-
+ 
 const Qty = styled.span`
   font-family: "JetBrains Mono", monospace;
   font-size: 12px;
-  color: #555555;
-  background: #ffffff;
+  color: var(--c-text-secondary);
+  background: var(--c-bg-panel);
   padding: 2px 8px;
   border-radius: 2px;
-  border: 1px solid #dddddd;
+  border: 1px solid var(--c-border-light);
 `;
-
+ 
 const Kcal = styled.span`
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #555555;
+  color: var(--c-text-secondary);
 `;
-
+ 
 const QtyBtn = styled.button`
   font-family: "JetBrains Mono", monospace;
   font-size: 14px;
   width: 24px;
   height: 24px;
-  border: 1px solid #333333;
-  background: #ffffff;
-  color: #111111;
+  border: 1px solid var(--c-border-strong);
+  background: var(--c-bg-panel);
+  color: var(--c-text-primary);
   border-radius: 2px;
   cursor: pointer;
   padding: 0;
 `;
-
+ 
 const RemoveBtn = styled.button`
   font-family: "JetBrains Mono", monospace;
   font-size: 14px;
-  color: #aaaaaa;
+  color: var(--c-text-muted);
   background: none;
   border: none;
   cursor: pointer;
   padding: 0 4px;
 `;
-
+ 
 const Empty = styled.p`
   font-family: "JetBrains Mono", monospace;
   font-size: 12px;
-  color: #aaaaaa;
+  color: var(--c-text-muted);
   text-align: center;
   padding: 16px;
 `;
-
+ 
 const Footer = styled.div`
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed #dddddd;
+  border-top: 1px dashed var(--c-border-light);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #555555;
+  color: var(--c-text-secondary);
   display: flex;
   justify-content: space-between;
 `;
-
+ 
 const FooterStrong = styled.strong`
-  color: #111111;
+  color: var(--c-text-primary);
   font-weight: 500;
 `;
-
+ 
 // ConfirmBtn — base styles only; background/cursor/opacity are set via inline style in JSX
 const ConfirmBtn = styled.button`
   width: 100%;
@@ -200,31 +201,31 @@ const ConfirmBtn = styled.button`
   font-weight: 500;
   margin-top: 8px;
 `;
-
+ 
 // StatusMsg — brief inline feedback shown for 3 seconds after confirming
 const StatusMsgOk = styled.p`
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #2e7d32;
+  color: var(--c-success);
   text-align: center;
   margin: 6px 0 0;
 `;
-
+ 
 const StatusMsgError = styled.p`
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #c62828;
+  color: var(--c-error);
   text-align: center;
   margin: 6px 0 0;
 `;
-
+ 
 /* ---------------------- COMPONENT ---------------------- */
-
+ 
 type MyPlateProps = {
     items: PlateItem[];
     onItemsChange: (items: PlateItem[]) => void;
 };
-
+ 
 // items and onItemsChange are lifted to page.tsx so FoodSearch can add to the plate
 const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
     // Running totals: a simple reduce over the list
@@ -235,23 +236,23 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
     const totalFat = items.reduce((s, i) => s + i.fat * i.qty, 0);
     const totalSugar = items.reduce((s, i) => s + i.sugar * i.qty, 0);
     const [confirmStatus, setConfirmStatus] = React.useState<"" | "saving" | "ok" | "error">("");
-
+ 
     // Increase a row's quantity by 1
     const inc = (name: string) => {
         onItemsChange(items.map(i => i.name === name ? { ...i, qty: i.qty + 1 } : i));
     };
-
+ 
     // Decrease a row's quantity. Clamped at 1 so "-" never auto-removes
     // (user has to click ✕ to remove).
     const dec = (name: string) => {
         onItemsChange(items.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty - 1) } : i));
     };
-
+ 
     // Remove a row from the plate
     const remove = (name: string) => {
         onItemsChange(items.filter(i => i.name !== name));
     };
-
+ 
     // Confirm day: POST today's totals + items to the API route,
     // which saves the day to MongoDB.
     const confirmDay = async () => {
@@ -273,26 +274,26 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
             setTimeout(() => setConfirmStatus(""), 3000);
         }
     };
-
+ 
     const isBusy = confirmStatus === "saving";
     const isEmpty = items.length === 0;
-
+ 
     return (
         <Panel>
             <OwnerTag>02 · My Plate</OwnerTag>
-
+ 
             <PanelHeader>
                 <PanelTitle>Today&apos;s plate</PanelTitle>
                 <PanelSubtitle>Draft</PanelSubtitle>
             </PanelHeader>
-
+ 
             <Circle>
                 <CircleCount>{items.length}</CircleCount>
                 <CircleLabel>items</CircleLabel>
             </Circle>
-
+ 
             {items.length === 0 && <Empty>Plate is empty.</Empty>}
-
+ 
             {items.map(item => (
                 <Row key={item.name}>
                     <RowName>{item.name}</RowName>
@@ -303,7 +304,7 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
                     <RemoveBtn onClick={() => remove(item.name)}>✕</RemoveBtn>
                 </Row>
             ))}
-
+ 
             <Footer>
                 <span>Running total</span>
                 <span>
@@ -312,12 +313,12 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
                     {" · "}{totalCarbs}g carbs
                 </span>
             </Footer>
-
+ 
             <ConfirmBtn
                 disabled={isBusy || isEmpty}
                 onClick={confirmDay}
                 style={{
-                    background: isBusy || isEmpty ? "#aaaaaa" : "#111111",
+                    background: isBusy || isEmpty ? "var(--c-disabled)" : "var(--c-accent)",
                     cursor: isBusy || isEmpty ? "not-allowed" : "pointer",
                     opacity: isBusy ? 0.7 : 1,
                 }}
@@ -329,5 +330,5 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
         </Panel>
     );
 };
-
+ 
 export default MyPlate;
