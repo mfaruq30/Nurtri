@@ -2,7 +2,7 @@
 /* Alex Component */
 
 import { useMemo, useState } from "react"
-import styled from "styled-components"
+import styled from "styled-components";
 
 export type HealthScores = {
   calories: number;
@@ -14,13 +14,14 @@ export type HealthScores = {
 
 type CalendarOverviewProps = {
   dailyData: Record<string, HealthScores>;
-  month?: number;
+  month?: number
   year?: number;
-}
+};
+
 
 const Panel = styled.section`
-  background: #ffffff;
-  border: 1px solid #1a1a1a;
+  background: var(--c-bg-panel);
+  border: 1px solid var(--c-border-strong);
   border-radius: 4px;
   padding: 24px;
   position: relative;
@@ -30,47 +31,48 @@ const OwnerTag = styled.div`
   position: absolute;
   top: -10px;
   left: 20px;
-  background: #1a1a1a;
-  color: #f4f1ea;
+  background: var(--c-inv-bg);
+  color: var(--c-inv-text);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
   padding: 4px 10px;
   border-radius: 2px;
   text-transform: uppercase;
-`;
+`
 
 const Title = styled.h2`
   font-family: "Fraunces", serif;
   font-size: 22px;
   margin: 0;
-`;
+  color: var(--c-text-primary);
+`
 
 const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-`;
+`
 
 const MonthButtons = styled.div`
   display: flex;
   gap: 8px;
 `;
-
 const MonthButton = styled.button`
-  border: 1px solid #d8d8d8;
-  background: #ffffff;
-  color: #1a1a1a;
+  border: 1px solid var(--c-border-light);
+  background: var(--c-bg-panel);
+  color: var(--c-text-primary);
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
   padding: 6px 10px;
   cursor: pointer;
+  border-radius: 2px;
 
   &:hover {
-    border-color: #1a1a1a;
+    border-color: var(--c-border-strong);
   }
-`;
+`
 
 const WeekHeader = styled.div`
   display: grid;
@@ -78,14 +80,13 @@ const WeekHeader = styled.div`
   gap: 8px;
   margin-bottom: 8px;
 `;
-
 const WeekLabel = styled.div`
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   text-transform: uppercase;
-  color: #666;
+  color: var(--c-text-muted);
   text-align: center;
-`;
+`
 
 const Grid = styled.div`
   display: grid;
@@ -95,42 +96,43 @@ const Grid = styled.div`
 
 const EmptyCell = styled.div`
   height: 40px;
-`;
+`
 
 const DayButton = styled.button<{ $selected: boolean; $hasData: boolean }>`
   height: 40px;
-  border: 1px solid #d8d8d8;
-  background: ${({ $selected, $hasData }) => {
-    if ($selected) return "#1a1a1a";
-    if ($hasData) return "#f3f6ea";
-    return "#ffffff";
+  border: 1px solid var(--c-border-light);
+  background: ${({$selected, $hasData}) => {
+    if ($selected) return "var(--c-inv-bg)"
+    if ($hasData) return "var(--c-cal-has-data)";
+    return "var(--c-bg-panel)";
   }};
-  color: ${({ $selected }) => ($selected ? "#ffffff" : "#1a1a1a")};
+  color: ${({$selected}) => ($selected ? "var(--c-inv-text)" : "var(--c-text-primary)")};
   font-family: "JetBrains Mono", monospace;
   font-size: 12px;
   cursor: pointer;
+  border-radius: 2px;
 
   &:hover {
-    border-color: #1a1a1a;
+    border-color: var(--c-border-strong);
   }
 `;
-
 const Details = styled.div`
   margin-top: 20px;
-  border-top: 1px solid #e6e1d5;
+  border-top: 1px solid var(--c-border-light);
   padding-top: 16px;
-`;
+`
 
 const DetailDate = styled.p`
   margin: 0 0 8px;
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
-  color: #666;
+  color: var(--c-text-muted);
 `;
 
 const DetailRow = styled.p`
   margin: 4px 0;
   font-family: "Fraunces", serif;
+  color: var(--c-text-primary);
 `;
 
 const monthNames = [
@@ -145,56 +147,56 @@ const monthNames = [
   "September",
   "October",
   "November",
-  "December",
+  "December"
 ];
 
-const weekNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const weekNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 function pad(value: number) {
-  return String(value).padStart(2, "0");
+  return String(value).padStart(2, "0")
 }
 
 export default function CalendarOverview({
   dailyData,
   month,
-  year,
+  year
 }: CalendarOverviewProps) {
-  const now = new Date();
+  const now = new Date()
   const initialYear = year ?? now.getFullYear();
-  const initialMonth = month ?? now.getMonth() + 1;
+  const initialMonth = month ?? now.getMonth() + 1
 
-  const [displayYear, setDisplayYear] = useState(initialYear);
+  const [displayYear, setDisplayYear] = useState(initialYear)
   const [displayMonth, setDisplayMonth] = useState(initialMonth);
 
   const daysInMonth = new Date(displayYear, displayMonth, 0).getDate();
-  const firstWeekday = new Date(displayYear, displayMonth - 1, 1).getDay();
+  const firstWeekday = new Date(displayYear, displayMonth - 1, 1).getDay()
 
   const firstDayWithData = useMemo(() => {
     for (let day = 1; day <= daysInMonth; day += 1) {
-      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`;
+      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`
       if (dailyData[key]) return day;
     }
-    return 1;
+    return 1
   }, [displayYear, displayMonth, dailyData, daysInMonth]);
 
   const [selectedDay, setSelectedDay] = useState(firstDayWithData);
 
-  const selectedKey = `${displayYear}-${pad(displayMonth)}-${pad(selectedDay)}`;
+  const selectedKey = `${displayYear}-${pad(displayMonth)}-${pad(selectedDay)}`
   const selectedScores = dailyData[selectedKey];
 
   const goToPreviousMonth = () => {
-    const isJanuary = displayMonth === 1;
-    setDisplayMonth(isJanuary ? 12 : displayMonth - 1);
+    const isJanuary = displayMonth === 1
+    setDisplayMonth(isJanuary ? 12 : displayMonth - 1)
     setDisplayYear(isJanuary ? displayYear - 1 : displayYear);
-    setSelectedDay(1);
+    setSelectedDay(1)
   };
 
   const goToNextMonth = () => {
     const isDecember = displayMonth === 12;
     setDisplayMonth(isDecember ? 1 : displayMonth + 1);
-    setDisplayYear(isDecember ? displayYear + 1 : displayYear);
+    setDisplayYear(isDecember ? displayYear + 1 : displayYear)
     setSelectedDay(1);
-  };
+  }
 
   return (
     <Panel>
@@ -221,14 +223,14 @@ export default function CalendarOverview({
       </WeekHeader>
 
       <Grid>
-        {Array.from({ length: firstWeekday }).map((_, index) => (
+        {Array.from({length: firstWeekday}).map((_, index) => (
           <EmptyCell key={`empty-${index}`} />
         ))}
 
-        {Array.from({ length: daysInMonth }).map((_, index) => {
-          const day = index + 1;
+        {Array.from({length: daysInMonth}).map((_, index) => {
+          const day = index + 1
           const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`;
-          const hasData = Boolean(dailyData[key]);
+          const hasData = Boolean(dailyData[key])
 
           return (
             <DayButton
