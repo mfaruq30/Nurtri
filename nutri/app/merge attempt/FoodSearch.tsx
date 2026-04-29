@@ -191,12 +191,24 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
   }, []);
 
   //append a new search food to the recent list we have, remove duplicates if we have them and cap everything at 5
-  function saveRecent(q: string) {
-    const updated = [q].concat(recentSearches.filter(x => x !== q)).slice(0, 5);
-    localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
-    setRecentSearches(updated);
+function saveRecent(q: string) {
+  // Start with the new search at the top
+  const newList = [q];
+
+  // Add old searches, but skip if it's the same as the new one (no duplicates)
+  for (const search of recentSearches) {
+    if (search !== q) {
+      newList.push(search);
+    }
   }
 
+  // Only keep the first 5
+  const trimmed = newList.slice(0, 5);
+
+  // Save to localStorage and update state
+  localStorage.setItem(RECENT_KEY, JSON.stringify(trimmed));
+  setRecentSearches(trimmed);
+}
   async function handleSearch(searchQuery: string) {//this function handles the collecting data from getFoodData
     if (!searchQuery.trim()) return;  //to have a whitespace-only input
     setLoading(true);
