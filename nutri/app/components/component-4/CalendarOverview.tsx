@@ -1,7 +1,8 @@
 "use client";
+/* Alex Component */
 
-import { useMemo, useState } from "react";
-import styled from "styled-components";
+import { useMemo, useState } from "react"
+import styled from "styled-components"
 
 export type HealthScores = {
   calories: number;
@@ -9,13 +10,13 @@ export type HealthScores = {
   carbs: number;
   fat: number;
   sugar: number;
-};
+}
 
 type CalendarOverviewProps = {
   dailyData: Record<string, HealthScores>;
   month?: number;
   year?: number;
-};
+}
 
 const Panel = styled.section`
   background: #ffffff;

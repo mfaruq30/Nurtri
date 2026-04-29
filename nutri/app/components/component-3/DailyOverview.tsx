@@ -1,8 +1,8 @@
 // Dave Feng's Code
 "use client";
 
-import React from "react";
-import styled from "styled-components";
+import React from "react"
+import styled from "styled-components"
 
 export type DailyTotals = {
     calories: number;
@@ -10,7 +10,7 @@ export type DailyTotals = {
     carbs: number;
     fat: number;
     sugar: number;
-};
+}
 
 const DEFAULT_GOALS = {
     calories: 2000,
@@ -18,7 +18,7 @@ const DEFAULT_GOALS = {
     carbs: 250,
     fat: 67,
     sugar: 50,
-};
+}
 
 /* ---------------------- STYLED COMPONENTS ---------------------- */
 
@@ -100,7 +100,7 @@ const FoodRow = styled.div`
 
 type DailyOverviewProps = {
     totals: DailyTotals;
-};
+}
 
 const DailyOverview = ({ totals }: DailyOverviewProps) => {
     const goals = DEFAULT_GOALS;
@@ -140,6 +140,6 @@ const DailyOverview = ({ totals }: DailyOverviewProps) => {
             </FoodRow>
         </Panel>
     );
-};
+}
 
 export default DailyOverview;

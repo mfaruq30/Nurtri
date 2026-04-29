@@ -1,7 +1,8 @@
 "use client";
+/* Alex Component */
 //Khai Duc Pham's code
-import { useState } from "react";
-import styled from "styled-components";
+import { useState } from "react"
+import styled from "styled-components"
 import { PlateItem } from "./MyPlate";
 
 const Panel = styled.section`

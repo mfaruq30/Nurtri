@@ -1,7 +1,8 @@
 "use client";
+/* Alex Component */
 //Khai Duc Pham's code
-import { useState } from "react";
-import styled from "styled-components";
+import { useState } from "react"
+import styled from "styled-components"
 
 const Panel = styled.section`
   background: #ffffff;

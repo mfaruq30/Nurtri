@@ -2,8 +2,8 @@
 // Mirza Faruq — Component 2 (My Plate) — CS 391 Final Project
 "use client";
 
-import React from "react";
-import styled from "styled-components";
+import React from "react"
+import styled from "styled-components"
 
 // PlateItem is the shape of one food on the plate.
 // Kept inline because MyPlate is the only file that uses it.
@@ -13,7 +13,7 @@ export type PlateItem = {
     kcal: number;
     protein: number;
     carbs: number;
-};
+}
 
 /* ---------------------- STYLED COMPONENTS ---------------------- */
 
@@ -202,7 +202,7 @@ const ConfirmBtn = styled.button`
 type MyPlateProps = {
     items: PlateItem[];
     onItemsChange: (items: PlateItem[]) => void;
-};
+}
 
 // items and onItemsChange are lifted to page.tsx so FoodSearch can add to the plate
 const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
@@ -285,6 +285,6 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
             <ConfirmBtn onClick={confirmDay}>Confirm day →</ConfirmBtn>
         </Panel>
     );
-};
+}
 
 export default MyPlate;
