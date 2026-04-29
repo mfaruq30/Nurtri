@@ -3,7 +3,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { PlateItem } from "./MyPlate";  
+import { PlateItem } from "./MyPlate";
 
 const Panel = styled.section`
   background: var(--c-bg-panel);
@@ -166,145 +166,134 @@ const Chip = styled.span`
   cursor: pointer;
 `;
 
-const ErrorText = styled.p`
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  color: var(--c-error);
-  margin-bottom: 12px;
-`;
-
-const RECENT_KEY = "nutri-recent-searches";  //This is to a localstorage to store recent searches 
+const RECENT_KEY = "nutri-recent-searches";  //This is to a localstorage to store recent searches
 
 export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => void }) {   //this function is passed from the parent(page.tsx) to send a food item up
-    const [query, setQuery] = useState("");       //this is the text in the search input
-    const [nutrients, setNutrients] = useState<{ name: string; value: number; unit: string }[] | null>(null);   //parse the nutrient data
-    const [loading, setLoading] = useState(false);  //this is true when we are waiting for API response
-    const [error, setError] = useState("");         //error when we failed a search
-    const [searched, setSearched] = useState(false);  //to indicate whether a succesfull search is made --> so it monitors the Add button we have
-    const [foodName, setFoodName] = useState("");     //saved separately from the query becuz the query is cleared before fetch finishes
-    const [recentSearches, setRecentSearches] = useState<string[]>([]); //a list of max 5 recent items that got searched 
+  const [query, setQuery] = useState("");       //this is the text in the search input
+  const [nutrients, setNutrients] = useState<{ name: string; value: number; unit: string }[] | null>(null);   //parse the nutrient data
+  const [searched, setSearched] = useState(false);  //to indicate whether a succesfull search is made --> so it monitors the Add button we have
+  const [foodName, setFoodName] = useState("");     //saved separately from the query becuz the query is cleared before fetch finishes
+  const [recentSearches, setRecentSearches] = useState<string[]>([]); //a list of max 5 recent items that got searched
 
-    //load any previously saved recent searches from the RECENT_KEY
-    useEffect(() => {
-        const stored = localStorage.getItem(RECENT_KEY);
-        if (stored) setRecentSearches(JSON.parse(stored));
-    }, []);
+  //load any previously saved recent searches from the RECENT_KEY
+  useEffect(() => {
+    const stored = localStorage.getItem(RECENT_KEY);
+    if (stored) setRecentSearches(JSON.parse(stored));
+  }, []);
 
-    //append a new search food to the recent list we have, remove duplicates if we have them and cap everything at 5
-    function saveRecent(q: string) {
-        setRecentSearches(prev => {
-            const updated = [q, ...prev.filter(x => x !== q)].slice(0, 5);
-            localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
-            return updated;
-        });
+  //append a new search food to the recent list we have, remove duplicates if we have them and cap everything at 5
+  function saveRecent(q: string) {
+    // Start with the new search at the top
+    const newList = [q];
+
+    // Add old searches, but skip if it's the same as the new one (no duplicates)
+    for (const search of recentSearches) {
+      if (search !== q) {
+        newList.push(search);
+      }
     }
 
-    async function handleSearch(searchQuery: string) {//this function handles the collecting data from getFoodData
-        if (!searchQuery.trim()) return;  //to have a whitespace-only input
-        setLoading(true);
-        setError("");
-        setFoodName(searchQuery.trim());    //store the name of the food now before the query is cleared
-        setQuery("");                       //clear the input
+    // Only keep the first 5
+    const trimmed = newList.slice(0, 5);
 
-        //call our getFoodData\route.ts, keep the API key in server-side 
-        const res = await fetch(`/api/getFoodData?query=${searchQuery}`);  
-        const data = await res.json();
+    // Save to localStorage and update state
+    localStorage.setItem(RECENT_KEY, JSON.stringify(trimmed));
+    setRecentSearches(trimmed);
+  }
 
-        if (!res.ok || !data.foods || data.foods.length === 0) {
-            setError("Something went wrong, please try again.");
-            setLoading(false);
-            return;
-        }
+  async function handleSearch(searchQuery: string) {//this function handles the collecting data from getFoodData
+    if (!searchQuery.trim()) return;  //to have a whitespace-only input
 
-        //Here, I use the first result from USDA. I fetched from the dataType Branded (you can see the link in getFoodData\route.ts) because this is
-        //the only dataType that contains specific nutrients that we need, also it returns A LOT OF different brands 
-        //for a specific food item. So for the simplicity of the project, I only take the first 
-        //matching food item from the API even though it might not be a 100% match like (steak and TENDERLOIN steak or smt like that) 
-        const food = data.foods[0];  
-        const foodNutrients = food.foodNutrients;
+    setFoodName(searchQuery.trim());    //store the name of the food now before the query is cleared
+    setQuery("");                       //clear the input
 
-        //extract the nutreitns by name from the USDA attributes
-        const protein = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Protein");
-        const carbs = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Carbohydrate, by difference");
-        const calories = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Energy");
-        const fat = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total lipid (fat)");
-        const sugar = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total Sugars");
-        
-        //turn them into an array, default to 0 if they are missing 
-        setNutrients([
-            { name: "Calories", value: calories?.value ?? 0, unit: "kcal" },
-            { name: "Protein", value: protein?.value ?? 0, unit: "g" },
-            { name: "Carbs", value: carbs?.value ?? 0, unit: "g" },
-            { name: "Fat", value: fat?.value ?? 0, unit: "g" },
-            { name: "Sugar", value: sugar?.value ?? 0, unit: "g" },
-        ]);
+    //call our getFoodData\route.ts, keep the API key in server-side
+    const res = await fetch(`/api/getFoodData?query=${searchQuery}`);
+    const data = await res.json();
 
-        setLoading(false);
-        setSearched(true);          //searched is true since we have successfully fetched valid data
-        saveRecent(searchQuery.trim());
-    }
-    
-    return (
-        <Panel>
-          
-            <OwnerTag>01 · Food Search</OwnerTag>
-            <PanelHeader>
-                <PanelTitle>Search & inspect</PanelTitle>
-                <PanelSubtitle>USDA API</PanelSubtitle>
-            </PanelHeader>
-            
-            
-            <SearchInput //a search bar for user to input their food item
-                type="text"
-                value={query}
-                placeholder="Search a food..."
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch(query)}     //allow the enter key to trigger a search as well :)
-            />
+    // If nothing came back, just stop here (no error message shown)
+    if (!data.foods || data.foods.length === 0) return;
 
-            {error && <ErrorText>{error}</ErrorText>}
+    //Here, I use the first result from USDA. I fetched from the dataType Branded (you can see the link in getFoodData\route.ts) because this is
+    //the only dataType that contains specific nutrients that we need, also it returns A LOT OF different brands
+    //for a specific food item. So for the simplicity of the project, I only take the first
+    //matching food item from the API even though it might not be a 100% match like (steak and TENDERLOIN steak or smt like that)
+    const food = data.foods[0];
+    const foodNutrients = food.foodNutrients;
 
-            <SearchButton onClick={() => handleSearch(query)}>Search</SearchButton>
+    //extract the nutreitns by name from the USDA attributes
+    const protein  = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Protein");
+    const carbs    = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Carbohydrate, by difference");
+    const calories = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Energy");
+    const fat      = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total lipid (fat)");
+    const sugar    = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total Sugars");
 
-            {loading && <p>Loading...</p>}
+    //turn them into an array, default to 0 if they are missing
+    setNutrients([
+      { name: "Calories", value: calories?.value ?? 0, unit: "kcal" },
+      { name: "Protein",  value: protein?.value  ?? 0, unit: "g" },
+      { name: "Carbs",    value: carbs?.value    ?? 0, unit: "g" },
+      { name: "Fat",      value: fat?.value      ?? 0, unit: "g" },
+      { name: "Sugar",    value: sugar?.value    ?? 0, unit: "g" },
+    ]);
 
-            
-            {!loading && searched && nutrients && (         //only render the preview and Add button after a successfull search 
-                <PreviewBox>
-                    <NutritionGrid>
-                        {nutrients.map((n, i) => (          //this is literally the same logic we have in the Nav question on exam
-                            <NutritionCell key={i}>
-                                <NutritionLabel>{n.name}</NutritionLabel>
-                                <NutritionValue>{n.value}{n.unit}</NutritionValue>
-                            </NutritionCell>
-                        ))}   
-                    </NutritionGrid>
+    setSearched(true);          //searched is true since we have successfully fetched valid data
+    saveRecent(searchQuery.trim());
+  }
 
-                      
-                    <AddButton $searched={searched} onClick={() => { //pull each nutrient value out of the array, then pass a PlateItem up to the parent via onAdd
-                        if (!nutrients || !onAdd) return;
-                        const kcal = nutrients.find(n => n.name === "Calories")?.value ?? 0;
-                        const protein = nutrients.find(n => n.name === "Protein")?.value ?? 0;
-                        const carbs = nutrients.find(n => n.name === "Carbs")?.value ?? 0;
-                        const fat = nutrients.find(n => n.name === "Fat")?.value ?? 0;
-                        const sugar = nutrients.find(n => n.name === "Sugar")?.value ?? 0;
-                        onAdd({ name: foodName, qty: 1, kcal, protein, carbs, fat, sugar });
-                    }}>+ Add to plate</AddButton>
-                </PreviewBox>
-            )}
+  return (
+    <Panel>
+      <OwnerTag>01 · Food Search</OwnerTag>
+      <PanelHeader>
+        <PanelTitle>Search & inspect</PanelTitle>
+        <PanelSubtitle>USDA API</PanelSubtitle>
+      </PanelHeader>
 
-            {!searched && ( //Hide the Add button shown before any search has been made
-                <AddButton $searched={false}>+ Add to plate</AddButton>
-            )}
+      <SearchInput //a search bar for user to input their food item
+        type="text"
+        value={query}
+        placeholder="Search a food..."
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch(query)}     //allow the enter key to trigger a search as well :)
+      />
 
-            <RecentSection>
-                <RecentLabel>Recent</RecentLabel>
-                <ChipsRow>
-                    {recentSearches.map((item, i) => ( //this is fro the recent items, clicking on them also trigger a search as well
-                        <Chip key={i} onClick={() => handleSearch(item)}>{item}</Chip>
-                    ))}
-                </ChipsRow>
-            </RecentSection>
-        </Panel>
-    );
+      <SearchButton onClick={() => handleSearch(query)}>Search</SearchButton>
+
+      {searched && nutrients && (         //only render the preview and Add button after a successfull search
+        <PreviewBox>
+          <NutritionGrid>
+            {nutrients.map((n, i) => (          //this is literally the same logic we have in the Nav question on exam
+              <NutritionCell key={i}>
+                <NutritionLabel>{n.name}</NutritionLabel>
+                <NutritionValue>{n.value}{n.unit}</NutritionValue>
+              </NutritionCell>
+            ))}
+          </NutritionGrid>
+
+          <AddButton $searched={searched} onClick={() => { //pull each nutrient value out of the array, then pass a PlateItem up to the parent via onAdd
+            if (!nutrients || !onAdd) return;
+            const kcal    = nutrients.find(n => n.name === "Calories")?.value ?? 0;
+            const protein = nutrients.find(n => n.name === "Protein")?.value  ?? 0;
+            const carbs   = nutrients.find(n => n.name === "Carbs")?.value    ?? 0;
+            const fat     = nutrients.find(n => n.name === "Fat")?.value      ?? 0;
+            const sugar   = nutrients.find(n => n.name === "Sugar")?.value    ?? 0;
+            onAdd({ name: foodName, qty: 1, kcal, protein, carbs, fat, sugar });
+          }}>+ Add to plate</AddButton>
+        </PreviewBox>
+      )}
+
+      {!searched && ( //Hide the Add button shown before any search has been made
+        <AddButton $searched={false}>+ Add to plate</AddButton>
+      )}
+
+      <RecentSection>
+        <RecentLabel>Recent</RecentLabel>
+        <ChipsRow>
+          {recentSearches.map((item, i) => ( //this is fro the recent items, clicking on them also trigger a search as well
+            <Chip key={i} onClick={() => handleSearch(item)}>{item}</Chip>
+          ))}
+        </ChipsRow>
+      </RecentSection>
+    </Panel>
+  );
 }
