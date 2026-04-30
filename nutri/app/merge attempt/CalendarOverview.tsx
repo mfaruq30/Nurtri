@@ -4,15 +4,15 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 export type HealthScores = {
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  sugar: number;
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+  sugar: number
 };
 
 type CalendarOverviewProps = {
-  dailyData: Record<string, HealthScores>;
+  dailyData: Record<string, any>;
   month?: number;
   year?: number;
 };
@@ -144,7 +144,7 @@ const monthNames = [
 const weekNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function pad(value: number) {
-  return String(value).padStart(2, "0");
+  return String(value).padStart(2, "0")
 }
 
 export default function CalendarOverview({
@@ -157,26 +157,27 @@ export default function CalendarOverview({
   const initialMonth = month ?? now.getMonth() + 1;
 
   const [displayYear, setDisplayYear] = useState(initialYear);
-  const [displayMonth, setDisplayMonth] = useState(initialMonth);
+  const [displayMonth, setDisplayMonth] = useState(initialMonth)
+  // console.log('calendar rendering');
 
   const daysInMonth = new Date(displayYear, displayMonth, 0).getDate();
-  const firstWeekday = new Date(displayYear, displayMonth - 1, 1).getDay();
+  const firstWeekdya = new Date(displayYear, displayMonth - 1, 1).getDay();
 
   const firstDayWithData = useMemo(() => {
     for (let day = 1; day <= daysInMonth; day += 1) {
-      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`;
+      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`
       if (dailyData[key]) return day;
     }
-    return 1;
+    return 1
   }, [displayYear, displayMonth, dailyData, daysInMonth]);
 
-  const [selectedDay, setSelectedDay] = useState(firstDayWithData);
+  const [selectedDay, setSelectedDay] = useState(firstDayWithData)
 
   const selectedKey = `${displayYear}-${pad(displayMonth)}-${pad(selectedDay)}`;
-  const selectedScores = dailyData[selectedKey];
+  const selectedScores: any = dailyData[selectedKey];
 
   const goToPreviousMonth = () => {
-    const isJanuary = displayMonth === 1;
+    const isJanuary = displayMonth === 1
     setDisplayMonth(isJanuary ? 12 : displayMonth - 1);
     setDisplayYear(isJanuary ? displayYear - 1 : displayYear);
     setSelectedDay(1);
@@ -214,7 +215,7 @@ export default function CalendarOverview({
       </WeekHeader>
 
       <Grid>
-        {Array.from({ length: firstWeekday }).map((_, index) => (
+        {Array.from({ length: firstWeekdya }).map((_, index) => (
           <EmptyCell key={`empty-${index}`} />
         ))}
 
