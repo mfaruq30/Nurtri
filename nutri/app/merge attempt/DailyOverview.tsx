@@ -101,11 +101,11 @@ const FoodRow = styled.div`
 /* ---------------------- COMPONENT ---------------------- */
 
 type DailyOverviewProps = {
-    totals: DailyTotals;
+    totals: any;
 };
 
 const DailyOverview = ({ totals }: DailyOverviewProps) => {
-    const goals = DEFAULT_GOALS;
+    const goals = DEFAULT_GOALS
 
     return (
         <Panel>
@@ -141,7 +141,7 @@ const DailyOverview = ({ totals }: DailyOverviewProps) => {
                 <strong>{totals.sugar} / {goals.sugar} g</strong>
             </FoodRow>
         </Panel>
-    );
+    )
 };
 
 export default DailyOverview;

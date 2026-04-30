@@ -175,18 +175,18 @@ const ErrorText = styled.p`
 const RECENT_KEY = "nutri-recent-searches";
 
 export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => void }) {
-    const [query, setQuery] = useState("");
-    const [nutrients, setNutrients] = useState<{ name: string; value: number; unit: string }[] | null>(null);
+    const [query, setQuery] = useState("")
+    const [nutrients, setNutrients] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [searched, setSearched] = useState(false);
+    const [searched, setSearched] = useState(false)
     // store the food name separately because query gets cleared before search finishes
     const [foodName, setFoodName] = useState("");
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
     useEffect(() => {
         const stored = localStorage.getItem(RECENT_KEY);
-        if (stored) setRecentSearches(JSON.parse(stored));
+        if (stored) setRecentSearches(JSON.parse(stored))
     }, []);
 
     function saveRecent(q: string) {
@@ -219,7 +219,7 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
         const protein = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Protein");
         const carbs = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Carbohydrate, by difference");
         const calories = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Energy");
-        const fat = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total lipid (fat)");
+        const fat = foodNutrients.find((n: any) => n.nutrientName === "Total lipid (fat)");
         const sugar = foodNutrients.find((n: { nutrientName: string }) => n.nutrientName === "Total Sugars");
         setNutrients([
             { name: "Calories", value: calories?.value ?? 0, unit: "kcal" },
@@ -229,7 +229,7 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
             { name: "Sugar", value: sugar?.value ?? 0, unit: "g" },
         ]);
 
-        setLoading(false);
+        setLoading(false)
         setSearched(true);
         saveRecent(searchQuery.trim());
     }

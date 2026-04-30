@@ -222,14 +222,14 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
     const [confirmStatus, setConfirmStatus] = React.useState<"" | "saving" | "ok" | "error">("");
 
     // Increase a row's quantity by 1
-    const inc = (name: string) => {
+    const inc_qty = (name: string) => {
         onItemsChange(items.map(i => i.name === name ? { ...i, qty: i.qty + 1 } : i));
     };
 
     // Decrease a row's quantity. Clamped at 1 so "-" never auto-removes
     // (user has to click ✕ to remove).
-    const dec = (name: string) => {
-        onItemsChange(items.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty - 1) } : i));
+    const dec_qty = (name: string) => {
+        onItemsChange(items.map(i => i.name === name ? { ...i, qty: Math.max(1, i.qty - 1) } : i))
     };
 
     // Remove a row from the plate
@@ -275,12 +275,12 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
 
             {items.length === 0 && <Empty>Plate is empty.</Empty>}
 
-            {items.map(item => (
+             {items.map(item => (
                 <Row key={item.name}>
                     <RowName>{item.name}</RowName>
-                    <QtyBtn onClick={() => dec(item.name)}>-</QtyBtn>
+                    <QtyBtn onClick={() => dec_qty(item.name)}>-</QtyBtn>
                     <Qty>×{item.qty}</Qty>
-                    <QtyBtn onClick={() => inc(item.name)}>+</QtyBtn>
+                    <QtyBtn onClick={() => inc_qty(item.name)}>+</QtyBtn>
                     <Kcal>{item.kcal * item.qty} kcal</Kcal>
                     <RemoveBtn onClick={() => remove(item.name)}>✕</RemoveBtn>
                 </Row>
@@ -295,7 +295,7 @@ const MyPlate = ({ items, onItemsChange }: MyPlateProps) => {
                 </span>
             </Footer>
 
-            <ConfirmBtn
+             <ConfirmBtn
                 $busy={confirmStatus === "saving"}
                 $empty={items.length === 0}
                 disabled={confirmStatus === "saving" || items.length === 0}

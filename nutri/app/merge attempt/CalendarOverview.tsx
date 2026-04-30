@@ -144,7 +144,7 @@ const monthNames = [
 const weekNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function pad(value: number) {
-  return String(value).padStart(2, "0");
+  return String(value).padStart(2, "0")
 }
 
 export default function CalendarOverview({
@@ -164,19 +164,19 @@ export default function CalendarOverview({
 
   const firstDayWithData = useMemo(() => {
     for (let day = 1; day <= daysInMonth; day += 1) {
-      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`;
+      const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`
       if (dailyData[key]) return day;
     }
     return 1;
   }, [displayYear, displayMonth, dailyData, daysInMonth]);
 
-  const [selectedDay, setSelectedDay] = useState(firstDayWithData);
+  const [selectedDay, setSelectedDay] = useState(firstDayWithData)
 
   const selectedKey = `${displayYear}-${pad(displayMonth)}-${pad(selectedDay)}`;
-  const selectedScores = dailyData[selectedKey];
+  const selectedScores: any = dailyData[selectedKey];
 
   const goToPreviousMonth = () => {
-    const isJanuary = displayMonth === 1;
+    const isJanuary = displayMonth === 1
     setDisplayMonth(isJanuary ? 12 : displayMonth - 1);
     setDisplayYear(isJanuary ? displayYear - 1 : displayYear);
     setSelectedDay(1);
