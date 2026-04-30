@@ -12,7 +12,7 @@ export type HealthScores = {
 };
 
 type CalendarOverviewProps = {
-  dailyData: Record<string, HealthScores>;
+  dailyData: Record<string, any>;
   month?: number;
   year?: number;
 };
@@ -157,10 +157,11 @@ export default function CalendarOverview({
   const initialMonth = month ?? now.getMonth() + 1;
 
   const [displayYear, setDisplayYear] = useState(initialYear);
-  const [displayMonth, setDisplayMonth] = useState(initialMonth);
+  const [displayMonth, setDisplayMonth] = useState(initialMonth)
+  // console.log('calendar rendering');
 
   const daysInMonth = new Date(displayYear, displayMonth, 0).getDate();
-  const firstWeekday = new Date(displayYear, displayMonth - 1, 1).getDay();
+  const firstWeekdya = new Date(displayYear, displayMonth - 1, 1).getDay();
 
   const firstDayWithData = useMemo(() => {
     for (let day = 1; day <= daysInMonth; day += 1) {
@@ -214,7 +215,7 @@ export default function CalendarOverview({
       </WeekHeader>
 
       <Grid>
-        {Array.from({ length: firstWeekday }).map((_, index) => (
+        {Array.from({ length: firstWeekdya }).map((_, index) => (
           <EmptyCell key={`empty-${index}`} />
         ))}
 

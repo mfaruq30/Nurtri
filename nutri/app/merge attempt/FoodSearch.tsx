@@ -199,6 +199,7 @@ export default function FoodSearch({ onAdd }: { onAdd?: (item: PlateItem) => voi
 
     async function handleSearch(searchQuery: string) {
         if (!searchQuery.trim()) return;
+        // console.debug('searching:', searchQuery);
         setLoading(true);
         setError("");
         setFoodName(searchQuery.trim());
