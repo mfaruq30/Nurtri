@@ -4,11 +4,11 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 
 export type HealthScores = {
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  sugar: number;
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+  sugar: number
 };
 
 type CalendarOverviewProps = {
@@ -168,7 +168,7 @@ export default function CalendarOverview({
       const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`
       if (dailyData[key]) return day;
     }
-    return 1;
+    return 1
   }, [displayYear, displayMonth, dailyData, daysInMonth]);
 
   const [selectedDay, setSelectedDay] = useState(firstDayWithData)
