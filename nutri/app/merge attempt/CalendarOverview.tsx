@@ -1,8 +1,11 @@
 "use client";
+//Alex Component
+//this component is the calendar is lets you see your nutrition stats on each day
 
-import { useMemo, useState } from "react";
+import {useMemo, useState } from "react";
 import styled from "styled-components";
 
+//api info on what we are displaying
 export type HealthScores = {
   calories: number
   protein: number
@@ -11,12 +14,15 @@ export type HealthScores = {
   sugar: number
 };
 
+//calendar imports
 type CalendarOverviewProps = {
-  dailyData: Record<string, any>;
-  month?: number;
-  year?: number;
+  dailyData: Record<string, any>
+  month?: number
+  year?: number
 };
 
+
+// styled components
 const Panel = styled.section`
   background: var(--c-bg-panel);
   border: 1px solid var(--c-border-strong);
@@ -130,59 +136,66 @@ const DetailDate = styled.p`
   color: var(--c-text-muted);
 `;
 
+
 const DetailRow = styled.p`
   margin: 4px 0;
   font-family: "Fraunces", serif;
   color: var(--c-text-primary);
 `;
 
+//date constants
 const monthNames = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
-
 const weekNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-function pad(value: number) {
-  return String(value).padStart(2, "0")
-}
+
+// code starts here for calendar component
+
 
 export default function CalendarOverview({
   dailyData,
   month,
   year,
 }: CalendarOverviewProps) {
-  const now = new Date();
-  const initialYear = year ?? now.getFullYear();
-  const initialMonth = month ?? now.getMonth() + 1;
-
-  const [displayYear, setDisplayYear] = useState(initialYear);
-  const [displayMonth, setDisplayMonth] = useState(initialMonth)
+  const todaysdate = new Date(); //current date fallback if none specified
+  const initYear = year ?? todaysdate.getFullYear();
+  const initMonth = month ?? todaysdate.getMonth() + 1;
+  // State controls month/year in the calendar UI.
+  const [displayYear, setDisplayYear] = useState(initYear);
+  const [displayMonth, setDisplayMonth] = useState(initMonth)
   // console.log('calendar rendering');
+  //caclulator dimensions determination functions - first weekday determines the first weekday of the 1st of motnh
+  const daysinmonth = new Date(displayYear, displayMonth, 0).getDate();
+  const firstWeekday = new Date(displayYear, displayMonth - 1, 1).getDay();
 
-  const daysInMonth = new Date(displayYear, displayMonth, 0).getDate();
-  const firstWeekdya = new Date(displayYear, displayMonth - 1, 1).getDay();
-
+  // default to the first day that has data in the month rather than the first day
   const firstDayWithData = useMemo(() => {
-    for (let day = 1; day <= daysInMonth; day += 1) {
+    for (let day = 1; day <= daysinmonth; day += 1) {
       const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`
       if (dailyData[key]) return day;
     }
     return 1
-  }, [displayYear, displayMonth, dailyData, daysInMonth]);
+  }, [displayYear, displayMonth, dailyData, daysinmonth]);
+
+  // State tracker for which day is active to show the data
 
   const [selectedDay, setSelectedDay] = useState(firstDayWithData)
 
+  // creates key based on the date string
   const selectedKey = `${displayYear}-${pad(displayMonth)}-${pad(selectedDay)}`;
+  //get the nutrition data for the day
+
   const selectedScores: any = dailyData[selectedKey];
 
+  //helper functions to navigate year
   const goToPreviousMonth = () => {
     const isJanuary = displayMonth === 1
     setDisplayMonth(isJanuary ? 12 : displayMonth - 1);
     setDisplayYear(isJanuary ? displayYear - 1 : displayYear);
     setSelectedDay(1);
   };
-
   const goToNextMonth = () => {
     const isDecember = displayMonth === 12;
     setDisplayMonth(isDecember ? 1 : displayMonth + 1);
@@ -193,6 +206,7 @@ export default function CalendarOverview({
   return (
     <Panel>
       <OwnerTag>04 · Calendar</OwnerTag>
+      {/* header with month and year and navigation buttons*/}
       <HeaderRow>
         <Title>
           {monthNames[displayMonth - 1]} {displayYear}
@@ -207,7 +221,7 @@ export default function CalendarOverview({
           </MonthButton>
         </MonthButtons>
       </HeaderRow>
-
+      {/* Weekday labels*/}
       <WeekHeader>
         {weekNames.map((label) => (
           <WeekLabel key={label}>{label}</WeekLabel>
@@ -215,11 +229,12 @@ export default function CalendarOverview({
       </WeekHeader>
 
       <Grid>
-        {Array.from({ length: firstWeekdya }).map((_, index) => (
+        {/* ensures weekday starts under the right col*/}
+        {Array.from({ length: firstWeekday }).map((_, index) => (
           <EmptyCell key={`empty-${index}`} />
         ))}
-
-        {Array.from({ length: daysInMonth }).map((_, index) => {
+        {/* Generates day buttons */}
+        {Array.from({ length: daysinmonth }).map((_, index) => {
           const day = index + 1;
           const key = `${displayYear}-${pad(displayMonth)}-${pad(day)}`;
           const hasData = Boolean(dailyData[key]);
@@ -236,7 +251,7 @@ export default function CalendarOverview({
           );
         })}
       </Grid>
-
+    {/* Detail panel showing  data for selected day */}
       <Details>
         <DetailDate>{selectedKey}</DetailDate>
 
@@ -254,4 +269,10 @@ export default function CalendarOverview({
       </Details>
     </Panel>
   );
+}
+
+
+// a helper function makes sure dates are two numbers
+function pad(value: number) {
+  return String(value).padStart(2, "0")
 }

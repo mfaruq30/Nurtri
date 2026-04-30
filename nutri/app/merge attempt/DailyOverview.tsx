@@ -103,7 +103,7 @@ const FoodRow = styled.div`
 type DailyOverviewProps = {
     totals: DailyTotals;
 };
-
+//display the dailyoverview
 const DailyOverview = ({ totals }: DailyOverviewProps) => {
     const goals = DEFAULT_GOALS;
 
